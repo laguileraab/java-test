@@ -8003,3 +8003,7 @@ delete from menu where id="e9cddaf5-27e7-45a8-a584-7f74ce231ed9" [42122-200]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:832)
+2022-02-16 22:51:06 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "PERSON" no encontrada
+Table "PERSON" not found; SQL statement:
+drop table person [42102-200]
