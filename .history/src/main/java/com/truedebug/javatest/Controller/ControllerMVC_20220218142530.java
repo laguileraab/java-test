@@ -235,7 +235,7 @@ public class ControllerMVC {
         model.addAttribute("menu", menu);
         model.addAttribute("options", options);
         model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
-        person.setDate(Date.from(Instant.now()));
+        person.setDate(Convert.convertDate(Date.from(Instant.now());
         personService.saveOrUpdate(person);
         //model.setViewName("index.html");
         return "index.html";

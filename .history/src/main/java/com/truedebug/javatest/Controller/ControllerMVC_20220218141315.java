@@ -1,11 +1,9 @@
 package com.truedebug.javatest.Controller;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -110,16 +108,15 @@ public class ControllerMVC {
 
     ///Enviar datos del POST para registrar una nueva persona a la BD
     @RequestMapping(value = "/person/new", method = RequestMethod.POST)
-    public String createPerson(@ModelAttribute Person personStored, BindingResult result) {
+    public String createPerson(@ModelAttribute Person person, BindingResult result) {
 
         if (result.hasErrors()) {
             //En caso de que los datos ingresados contengan errores
             return "register.html";
         }
         //Se crea la persona correctamente y se almacena a través del servicio
-        personService.saveOrUpdate(personStored);
+        personService.saveOrUpdate(person);
         isAutenticated = true;
-        person = personStored;
 
         return "redirect:/list";
     }
@@ -154,7 +151,7 @@ public class ControllerMVC {
 
         if(!isAutenticated){
             //model.setViewName("index.html");
-            return "auth.html";
+            return "index.html";
         }
 
         //Se extraen los menus a través del servicio
@@ -186,6 +183,14 @@ public class ControllerMVC {
         //Se envía a la view de index.html para thymeleaf
         model.addAttribute("options", options);
 
+        if(!isAutenticated){
+            //Se establece la vista a mostrar
+            //model.setViewName("index.html");
+            return "index.html";
+        }
+        
+        //Se envían los datos de la persona autenticada para guardar su pedido
+        model.addAttribute("person", person);
         //Se muestra el día de la semana en español
         model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
 
@@ -235,7 +240,6 @@ public class ControllerMVC {
         model.addAttribute("menu", menu);
         model.addAttribute("options", options);
         model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
-        person.setDate(Date.from(Instant.now()));
         personService.saveOrUpdate(person);
         //model.setViewName("index.html");
         return "index.html";

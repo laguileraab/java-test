@@ -1,16 +1,14 @@
 package com.truedebug.javatest.Controller;
 
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.truedebug.Utils.Convert;
 import com.truedebug.Utils.Day;
 import com.truedebug.javatest.Entities.Menu;
 import com.truedebug.javatest.Entities.Person;
@@ -47,18 +45,16 @@ public class ControllerMVC {
     @RequestMapping(value = "/")
     public String root(Model model) {
         if(!isAutenticated | person == null | person.getEmail() == null | person.getName() == null){
-            
-            //Necesario para renderizar valores de thymeleaf en auth.html
             Person person = new Person();
+            //Necesario para renderizar valores de thymeleaf en auth.html
             model.addAttribute(person);
-
             return "auth.html";
         }else{
             try{
-                //Si el usuario se encuentra autenticado mostrarle la lista de opciones del menu del día
+                //Si el usuario se encuentra autenticado mostrarle la lista de opciones del menu del día y que escoge la que prefiere
                 return "redirect:/list";
             }catch(Exception e){
-                //Muestra la página para que se autentique
+                //En caso de que no se encuentre autenticado se le muestra la página para que se autentique
                 return "auth.html";
             }
         }
@@ -73,7 +69,6 @@ public class ControllerMVC {
         //
         //Necesario para renderizar valores de thymeleaf en auth.html
         model.addAttribute(person);
-
         //Al cerrar la cesión se le muestra la página de autenticación
         return "auth.html";
     }
@@ -88,7 +83,7 @@ public class ControllerMVC {
             //Se buca a la persona en la base de datos a través del correo
             person  = personService.getPersonById(personAux.getEmail());
             if(person.getPassword().equals(personAux.getPassword())){
-                //Si el correo y el password coinciden se autentica
+                //Si el correo y el password coinciden se autentifica
                 isAutenticated = true;
                 return "redirect:/list";
             }else{
@@ -103,58 +98,50 @@ public class ControllerMVC {
     ///Mostrar template para registrar una nueva persona register.html
     @RequestMapping(value = "/person", method = RequestMethod.GET)
     public String checkPerson(@ModelAttribute Person person) {
-
         //Se mapea /person para el template register.html
         return "register.html";
     }
 
     ///Enviar datos del POST para registrar una nueva persona a la BD
     @RequestMapping(value = "/person/new", method = RequestMethod.POST)
-    public String createPerson(@ModelAttribute Person personStored, BindingResult result) {
-
+    public String createPerson(@ModelAttribute Person person, BindingResult result) {
         if (result.hasErrors()) {
             //En caso de que los datos ingresados contengan errores
             return "register.html";
         }
         //Se crea la persona correctamente y se almacena a través del servicio
-        personService.saveOrUpdate(personStored);
+        personService.saveOrUpdate(person);
         isAutenticated = true;
-        person = personStored;
-
         return "redirect:/list";
     }
 
     //Listar menú del día
     @RequestMapping("/list")
-    public String listMenu(Model model){
+    public ModelAndView listMenu(){
 
-        //ModelAndView model = new ModelAndView();
+        ModelAndView model = new ModelAndView();
 
         //Se muestra el día de la semana en español
-        model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
-        
-        //Comprobar que el usuario halla realizado el pedido de hoy
-        if(person.getDate() != null){
+        model.addObject("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
 
-            //Convertir fecha para comparar
-            LocalDate dateP = Convert.convertDate(person.getDate());
-
-            if(!java.time.LocalDate.now().isEqual(dateP)){
-
-                //Eliminar pedido anterior a hoy
-                person.setDate(null);
-                person.setPreferredMenu(null);
-            }
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String storedDate = simpleDateFormat.format(person.getDate());
+        LocalDate date = LocalDate.parse(storedDate);
+        if(java.time.LocalDate.now().isEqual(date)){
+            
         }
-        //Necesario para thymeleaf index.html
-        model.addAttribute("person", person);
+
+        model.addObject("person", person);
+
+
         
         //Necesario para enviar los datos a /listEmployees
-        model.addAttribute("persons", personService.getAllPersons());
+        model.addObject("persons", personService.getAllPersons());
 
         if(!isAutenticated){
-            //model.setViewName("index.html");
-            return "auth.html";
+            model.setViewName("index.html");
+            return model;
         }
 
         //Se extraen los menus a través del servicio
@@ -166,8 +153,11 @@ public class ControllerMVC {
         //Se busca el menú del día
         menus.forEach((m)->{
             //Es necesario parsear la fecha de yyyy-MM-dd HH:MM:ss a yyyy-MM-dd debido a la inserción en la BD
-            LocalDate dateM = Convert.convertDate(m.getDate());
-            if(java.time.LocalDate.now().isEqual(dateM)){
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            String storedDate = simpleDateFormat.format(m.getDate());
+            LocalDate date = LocalDate.parse(storedDate);
+            if(java.time.LocalDate.now().isEqual(date)){
                 menu = m;
             }
         });
@@ -181,16 +171,22 @@ public class ControllerMVC {
         options.add(menu.getOption5());
 
         //Se envían los datos del menú para extraer el ID para Ordenar, Modificar y Eliminar
-        model.addAttribute("menu", menu);
+        model.addObject("menu", menu);
 
         //Se envía a la view de index.html para thymeleaf
-        model.addAttribute("options", options);
-
+        model.addObject("options", options);
+        if(!isAutenticated){
+            //Se establece la vista a mostrar
+            model.setViewName("index.html");
+            return model;
+        }
+        //Se envían los datos de la persona autenticada para guardar su pedido
+        model.addObject("person", person);
         //Se muestra el día de la semana en español
-        model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
+        model.addObject("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
 
-        //model.setViewName("index.html");
-        return "index.html";
+        model.setViewName("index.html");
+        return model;
     }
 
     ///Guardar opcion del menú del día en la base de datos
@@ -221,6 +217,7 @@ public class ControllerMVC {
             default:
             break;
         };
+        person.setEmail(person.getEmail());
         person.setRecomendations(recomendations);
         model.addAttribute("person", person);
         //Se extraen todas las opciones del día para pasarlo a thymeleaf como un solo objeto List
@@ -235,7 +232,6 @@ public class ControllerMVC {
         model.addAttribute("menu", menu);
         model.addAttribute("options", options);
         model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
-        person.setDate(Date.from(Instant.now()));
         personService.saveOrUpdate(person);
         //model.setViewName("index.html");
         return "index.html";

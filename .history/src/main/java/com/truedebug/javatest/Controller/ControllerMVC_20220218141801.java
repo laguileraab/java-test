@@ -1,11 +1,9 @@
 package com.truedebug.javatest.Controller;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -119,6 +117,7 @@ public class ControllerMVC {
         //Se crea la persona correctamente y se almacena a través del servicio
         personService.saveOrUpdate(personStored);
         isAutenticated = true;
+
         person = personStored;
 
         return "redirect:/list";
@@ -235,7 +234,6 @@ public class ControllerMVC {
         model.addAttribute("menu", menu);
         model.addAttribute("options", options);
         model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
-        person.setDate(Date.from(Instant.now()));
         personService.saveOrUpdate(person);
         //model.setViewName("index.html");
         return "index.html";

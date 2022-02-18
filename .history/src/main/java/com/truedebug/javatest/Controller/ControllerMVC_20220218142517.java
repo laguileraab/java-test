@@ -1,6 +1,5 @@
 package com.truedebug.javatest.Controller;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -235,7 +234,7 @@ public class ControllerMVC {
         model.addAttribute("menu", menu);
         model.addAttribute("options", options);
         model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
-        person.setDate(Date.from(Instant.now()));
+        person.setDate(Convert.convertDate(Date.from(Instant.now()));
         personService.saveOrUpdate(person);
         //model.setViewName("index.html");
         return "index.html";

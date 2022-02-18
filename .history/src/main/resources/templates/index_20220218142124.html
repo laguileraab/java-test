@@ -140,8 +140,9 @@
                                                         <form th:id="'myform' + ${i.index}" action="#" th:object="${person}" th:action="@{'/order/' + ${i.index}}" method="post">
                                                             <div class="alert alert-success" role="alert" th:text="${option}">
                                                             </div>
+                                                            <input th:field="*{date} " id="date " type="date " class="form-control " data-value="[2020-11-01] " hidden="true">
                                                             <div class="form mb-4">
-                                                                <input type="text" th:id="'recomendations' + ${i.index}" th:field="*{recomendations}" class="form-control form-control-lg" placeholder="Tiene alguna preferencia?" />
+                                                                <input type="text" th:id="recomendations" th:field="*{recomendations}" class="form-control form-control-lg" placeholder="Tiene alguna preferencia?" />
                                                             </div>
                                                         </form>
                                                     </div>
