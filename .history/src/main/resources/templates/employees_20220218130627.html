@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>Menú de la empresa TrueDebug</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css" rel="stylesheet" />
+    <!-- JavaScript MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js"></script>
+    <!--CSS Personalizado para el footer-->
+    <style>
+        header {
+            min-height: 90px;
+            background: lightcyan;
+        }
+        
+        body {
+            height: 99vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .h-custom {
+            height: fit-content;
+        }
+        
+        .h-100 {
+            margin-top: 2rem;
+            margin-bottom: 10rem;
+        }
+        
+        footer {
+            min-height: 50px;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        /*CSS para modificar la alineación del texto de la tabla*/
+        
+        td {
+            text-align: center;
+        }
+        
+        th {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <!--Menu  para mostrar la fecha y hora actual-->
+                <nav class="navbar navbar-light ms-auto mb-2 mb-lg-0 sticky-top bg-light">
+                    <div class="container-fluid">
+                        <h3 th:text="'Hola ' + ${person.getName}">Menú</h3>
+                        <h6 th:text="${today + ' ' + #calendars.format(#calendars.createNow(), 'HH:mm')}">Fecha</h6>
+                        <!--Menu  para los botones de Crear,Modificar/Eliminar,Empleados,Cerrar cesión-->
+                        <a class="nav-link" th:href="@{/}" th:if="${person.name == 'Nora'}"><!--<i class="fab fa-plus-circle me-2" aria-hidden="true"></i>-->Inicio</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenu" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                              Menús
+                            </a>
+                            <!-- Dropdown menu -->
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="nav-link" th:href="@{/menu}" th:if="${person.name == 'Nora'}"><!--<i class="fab fa-plus-circle me-2" aria-hidden="true"></i>-->Crear menú</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" th:if="${person.getName=='Nora' }" th:href="${'/list/menus'}"><!--<i class="fab fa-trash me-2" aria-hidden="true"></i>-->Mostrar menús</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPerson" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                              Empleados
+                            </a>
+                            <!-- Dropdown menu -->
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="nav-link" th:href="@{/person}" th:if="${person.name == 'Nora'}"><!--<i class="fab fa-bell me-2" aria-hidden="true"></i>-->Adicionar empleado</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <a class="nav-link" th:href="@{/reminder}" th:if="${person.name == 'Nora'}"><!--<i class="fab fa-bell me-2" aria-hidden="true"></i>-->Enviar recordatorio</a>
+                        <a class="nav-link" th:href="@{/logout}"><!--<i class="fab fa-lock me-2" aria-hidden="true"></i>-->Cerrar sesión</a>
+                    </div>
+                </nav>
+                <!--Tabla para mostrar las opciones de los empleados-->
+                <table class="table table-striped mb-0" style="margin-top: 2rem;">
+                    <col style="width:15%">
+                    <col style="width:10%">
+                    <col style="width:5%">
+                    <col style="width:50%">
+                    <col style="width:20%">
+                    <thead id="table-head">
+                        <tr>
+                            <th style="font-size: large;">Nombre</th>
+                            <th style="font-size: large;">Correo</th>
+                            <th style="font-size: large;">País</th>
+                            <th style="font-size: large;">Menu seleccionado</th>
+                            <th style="font-size: large;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!--Ciclo para mostrar las opciones del dia a través de thymeleaf-->
+                        <tr th:each="person2 : ${persons}">
+                            <td th:if="${person2.getName} " th:text="${person2.getName} " style="font-size: 14pt;">Menu</td>
+                            <td th:if="${person2.getEmail} " th:text="${person2.getEmail} " style="font-size: 14pt;">Menu</td>
+                            <td th:if="${person2.getNationality} " th:text="${person2.getNationality} " style="font-size: 14pt;">Menu</td>
+                            <td th:text="${person2.getPreferredMenu != null} ? ${person2.getPreferredMenu} : 'No ha ordenado hoy'" style="font-size: 14pt;">Menu</td>
+                            <td>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <!--Eliminar empleado-->
+                                        <a type="button" class="btn btn-dark" th:href="${'/dele/' + person2.getEmail}">Eliminar empleado</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </section>
+</body>
+<footer class="text-center text-lg-start bg-light text-muted ">
+    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary ">
+        <!-- Copyright -->
+        <div class="text-white mb-3 mb-md-0 ">
+            Copyright © 2022. All rights reserved.
+            <a class="text-white " href="https://www.truedebug.com/ ">truedebug.com</a>
+        </div>
+    </div>
+</footer>
+<script>
+    //Mostrar tiempo real, se ejecuta cada 1s
+    setInterval(function() {
+        var current = new Date();
+        var stringHours = current.getHours();
+        if (current.getMinutes() < 10) {
+            var stringMinutesShort = current.getMinutes();
+            var stringMinutes = "0" + stringMinutesShort;
+        } else {
+            var stringMinutes = current.getMinutes();
+        }
+        var stringTime = stringHours + ":" + stringMinutes;
+        document.getElementById("time").innerHTML = stringTime;
+    }, 1000);
+</script>
+
+</html>
