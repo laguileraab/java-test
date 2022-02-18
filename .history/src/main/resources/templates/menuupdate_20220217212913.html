@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>Menú de la empresa TrueDebug</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css" rel="stylesheet" />
+    <!-- JavaScript MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js"></script>
+
+    <style>
+        .divider:after,
+        .divider:before {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+        /*CSS para mostrar el footer al final del documento*/
+        
+        .h-custom {
+            height: calc(100% - 73px);
+        }
+        
+        @media (max-width: 450px) {
+            .h-custom {
+                height: 100%;
+            }
+        }
+        /*CSS para establecer el color del datepicker y seleccionar la fecha*/
+        
+        .picker__select-year {
+            background-color: #eee;
+        }
+        /*CSS para esconder los div*/
+        
+        .hidden_div {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="vh-100">
+        <div class="container-fluid h-custom">
+            <nav class="navbar navbar-light ms-auto mb-2 mb-lg-0 sticky-top bg-light">
+                <div class="container-fluid">
+                    <!--Menu  para mostrar la fecha y hora actual-->
+                    <h3>Menú</h3>
+                    <h6 th:text="${today + ' ' + #calendars.format(#calendars.createNow(), 'HH:mm')}">Fecha</h6>
+                    <a class="nav-link" th:href="@{/}"><!--<i class="fab fa-bell me-2" aria-hidden="true"></i>-->Inicio</a>
+                    <!--Menu  para los botones de Crear,Modificar/Eliminar,Empleados,Cerrar cesión-->
+                    <a class="nav-link" th:href="@{/employees}"><!--<i class="fab fa-bell me-2" aria-hidden="true"></i>-->Empleados</a>
+                    <a class="nav-link" th:href="@{/logout}"><!--<i class="fab fa-lock me-2" aria-hidden="true"></i>-->Cerrar sesión</a>
+                </div>
+            </nav>
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-9 col-lg-6 col-xl-5">
+                    <img src="https://mdbootstrap.com/img/Photos/Lightbox/Thumbnail/img%20(147).webp" class="img-fluid" alt="Sample image">
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                    <!--Formulario para crear un nuevo menú-->
+                    <form action="# " th:action="@{/menu/new}" th:object="${menu}" method="post">
+                        <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                            <p class="lead fw-normal mb-0 me-3">Menú</p>
+                        </div>
+                        <div class="divider d-flex align-items-center my-4"></div>
+                        <!--Selector para escoger cuantas opciones tendrá el menú-->
+                        <ul class="list-group list-group-flush">
+                            <select class="form-select" aria-label="Opciones" onchange="showDiv(this)" style="margin-bottom: 2rem;">
+                                <option selected>Selecciona cuantas opciones tiene el menú</option>
+                                <option value="1">Una</option>
+                                <option value="2">Dos</option>
+                                <option value="3">Tres</option>
+                                <option value="4">Cuatro</option>
+                                <option value="5">Cinco</option>
+                            </select>
+                            <div class="form-outline mb-4 hidden_div">
+                                <input type="text" id="option1" th:field="*{option1}" class="form-control form-control-lg " placeholder="Opción 1" required="required" />
+                                <label class="form-label" for="option1"></label>
+                            </div>
+                            <div class="form-outline mb-4 hidden_div">
+                                <input type="text" id="option2" th:field="*{option2}" class="form-control form-control-lg " placeholder="Opción 2" />
+                            </div>
+                            <label class="form-label" for="option1"></label>
+                            <div class="form-outline mb-4 hidden_div">
+                                <input type="text" id="option3" th:field="*{option3}" class="form-control form-control-lg " placeholder="Opción 3" />
+                                <label class="form-label" for="option1"></label>
+                            </div>
+                            <div class="form-outline mb-4 hidden_div">
+                                <input type="text" id="option4" th:field="*{option4}" class="form-control form-control-lg " placeholder="Opción 4" />
+                                <label class="form-label" for="option1"></label>
+                            </div>
+                            <div class="form-outline mb-4 hidden_div">
+                                <input type="text" id="option5" th:field="*{option5}" class="form-control form-control-lg " placeholder="Opción 5" />
+                                <label class="form-label" for="option1"></label>
+                            </div>
+                            <!--Given ID-->
+                            <input type="text" id="uuid" th:field="*{id}" class="form-control form-control-lg " hidden="true" />
+                            <!--Post-->
+                            <div class="md-form md-outline input-with-post-icon datepicker new openOnInputClick">
+                                <input placeholder="Escoge la fecha del menú" th:field="*{date}" id="date" type="date" class="form-control" data-value="[2020-11-01]" required>
+                            </div>
+                            <div class="text-center text-lg-start mt-4 pt-2 ">
+                                <span>
+                                    <button type="submit " class="btn btn-primary btn-lg " style="padding-left: 2.5rem; padding-right: 2.5rem; ">Establecer menú</button>
+                                    <a role="button" class="btn btn-danger btn-lg " th:if="${person.getName=='Nora' }" th:href="${'/delm/' + menu.getId}"><!--<i class="fab fa-trash me-2" aria-hidden="true"></i>-->Eliminar</a>
+                                </span>
+                            </div>
+                        </ul>
+                    </form>
+                </div>
+            </div>
+            <footer>
+                <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary ">
+                    <!-- Copyright -->
+                    <div class="text-white mb-3 mb-md-0 ">
+                        Copyright © 2022. All rights reserved.
+                        <a class="text-white " href="https://www.truedebug.com/ ">truedebug.com</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </section>
+
+</body>
+<script>
+    function showDiv(divId) {
+        //Mostrar todos los div luego de seleccionar una opción con el selector
+        document.querySelectorAll(".hidden_div").forEach(elem => elem.style.display = "block");
+        //Switch para habilitar y deshabilitar los div según la opción del selector
+        switch (divId.value) {
+            case "1":
+                document.getElementById("option1").disabled = false;
+                document.getElementById("option2").disabled = true;
+                document.getElementById("option3").disabled = true;
+                document.getElementById("option4").disabled = true;
+                document.getElementById("option5").disabled = true;
+                break;
+            case "2":
+                document.getElementById("option1").disabled = false;
+                document.getElementById("option2").disabled = false;
+                document.getElementById("option3").disabled = true;
+                document.getElementById("option4").disabled = true;
+                document.getElementById("option5").disabled = true;
+                break;
+            case "3":
+                document.getElementById("option1").disabled = false;
+                document.getElementById("option2").disabled = false;
+                document.getElementById("option3").disabled = false;
+                document.getElementById("option4").disabled = true;
+                document.getElementById("option5").disabled = true;
+                break;
+            case "4":
+                document.getElementById("option1").disabled = false;
+                document.getElementById("option2").disabled = false;
+                document.getElementById("option3").disabled = false;
+                document.getElementById("option4").disabled = false;
+                document.getElementById("option5").disabled = true;
+                break;
+            case "5":
+                document.getElementById("option1").disabled = false;
+                document.getElementById("option2").disabled = false;
+                document.getElementById("option3").disabled = false;
+                document.getElementById("option4").disabled = false;
+                document.getElementById("option5").disabled = false;
+                break;
+        }
+    }
+</script>
+
+</html>
