@@ -1,6 +1,5 @@
 package com.truedebug.javatest.Controller;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,10 +10,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.slack.api.Slack;
-import com.slack.api.methods.SlackApiException;
-import com.slack.api.methods.response.api.ApiTestResponse;
-import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 import com.truedebug.Utils.Convert;
 import com.truedebug.Utils.Day;
 import com.truedebug.javatest.Entities.Menu;
@@ -30,7 +25,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -89,7 +84,6 @@ public class ControllerMVC {
         if (result.hasErrors()) {
             return "register.html";
         }
-
         try{
             //Se buca a la persona en la base de datos a través del correo
             person  = personService.getPersonById(personAux.getEmail());
@@ -201,7 +195,7 @@ public class ControllerMVC {
 
     ///Guardar opcion del menú del día en la base de datos
     @RequestMapping(value = "/order/{option}")
-    public String listMenu(@RequestParam(value="recomendations",required=false) String recomendations, @PathVariable int option, Model model){
+    public String listMenu(@ModelAttribute String recomendations, @PathVariable int option, Model model){
         //ModelAndView model = new ModelAndView();
         if(!isAutenticated){
             //model.setViewName("index.html");
@@ -359,31 +353,18 @@ public class ControllerMVC {
 
         ///Listar pedidos de los empleados
         @RequestMapping(value = "/employees")
-        public String listEmployees(Model model){
-
+        public String listEmployees(@ModelAttribute Menu menu, BindingResult result,Model model){
+    
+            //Necesario para enviar los datos a /listEmployees
+            model.addAttribute("persons", personService.getAllPersons());
             //Se muestra el día de la semana en español
             model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
 
             model.addAttribute("person", person);
-            
+
             if(!isAutenticated){
                 return "index.html";
             }
-
-            //Modificamos el resultado del menú para mostrar además la recomendación
-            List<Person> persons = new ArrayList<Person>();
-            personService.getAllPersons().forEach((p)->{
-                //Mostramos la opción seleccionada junto a la recomendación
-                if(p.getPreferredMenu() != null && p.getPreferredMenu() != ""
-                && p.getRecomendations() != null && p.getRecomendations() != ""){
-                    p.setPreferredMenu(p.getPreferredMenu() + ", Recomendación: " + p.getRecomendations());
-                }
-                persons.add(p);
-            });
-
-            //Necesario para enviar los datos a /listEmployees
-            model.addAttribute("persons", persons);
-
             if (person!= null && person.getName().equals("Nora")) {
                 return "employees.html";
             } else {
@@ -413,39 +394,4 @@ public class ControllerMVC {
                 return "index.html";
             }
         }
-
-                ///Enviar recordatorio a todos los trabajadores
-                @RequestMapping(value = "/reminder")
-                public String delMenu(Model model) throws IOException, SlackApiException{
-
-                    //Necesario para enviar los datos a /listEmployees
-                    model.addAttribute("person",person);
-                    //
-                    //Necesario para enviar los datos a /Editar eliminar menu
-                    model.addAttribute("menu",menu);
-                    //Se muestra el día de la semana en español
-                    model.addAttribute("today", new Day().valueOf(Calendar.DAY_OF_WEEK));
-                    ///
-                    if(!isAutenticated){
-                        return "index.html";
-                    }
-                    if (person!= null && person.getName().equals("Nora")) {
-                        
-                        //Slack
-                        Slack slack = Slack.getInstance();
-                        //String token = System.getenv("SLACK_TOKEN");
-                        String token = "xoxb-3087036996598-3142468050273-9qguAWeZVlt0bMhS5c0u1OTg";
-                        ChatPostMessageResponse response = slack.methods(token).chatPostMessage(req -> req
-                        .channel("C033WE19FJ8") // Channel ID
-                        .text(":wave: Hi from a bot written in Java!"));
-
-                        //Necesario para enviar los datos a /listEmployees
-                        model.addAttribute("persons", personService.getAllPersons());
-                        model.addAttribute("ok", response.isOk());
-                        
-                        return "employees.html";
-                    } else {
-                        return "index.html";
-                    }
-                }
 }

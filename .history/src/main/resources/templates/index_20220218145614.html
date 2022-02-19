@@ -99,10 +99,10 @@
                     </div>
                 </nav>
                 <div style="margin: 1rem;" th:if="${person.getPreferredMenu !=null}">
-                    <div class="alert alert-primary" role="alert" th:text="'Ya usted ordenó hoy: ' + ${person.getPreferredMenu} + ', Recomendaciones: ' + ${person.getRecomendations}" th:if="${person.getPreferredMenu !=null and person.getRecomendations != null and person.getRecomendations != ''}">
+                    <div class="alert alert-primary" role="alert" th:text="'Ya usted ordenó hoy: ' + ${person.getPreferredMenu}" th:if="${person.getPreferredMenu !=null and person.getPreferredMenu !=null}">
 
                     </div>
-                    <div class="alert alert-primary" role="alert" th:text="'Ya usted ordenó hoy: ' + ${person.getPreferredMenu}" th:if="${person.getPreferredMenu !=null and (person.getRecomendations == null or person.getRecomendations == '')}">
+                    <div class="alert alert-primary" role="alert" th:text="'Ya usted ordenó hoy: ' + ${person.getPreferredMenu}" th:if="${person.getPreferredMenu !=null and not person.getPreferredMenu !=null}">
 
                     </div>
                 </div>
@@ -127,9 +127,9 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <!--Boton de solicitar pedido si son antes de las 11:00 AM sino muestra el 2do boton desactivado para mostrar el texto-->
-                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}&lt;11 and ${person.getPreferredMenu == null}" data-mdb-toggle="modal" th:attr="data-mdb-target='#ordenarModal' + ${i.index}" class="btn btn-info">Ordenar</a>
-                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}&lt;11 and ${person.getPreferredMenu != null}" data-mdb-toggle="modal" th:attr="data-mdb-target='#ordenarModal' + ${i.index}" class="btn btn-info">Cambiar pedido</a>
-                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}>=11" class="btn btn-success disabled" disabled>No se puede ordenar después de las 11 AM</a>
+                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}&lt;24 and ${person.getPreferredMenu == null}" data-mdb-toggle="modal" th:attr="data-mdb-target='#ordenarModal' + ${i.index}" class="btn btn-info">Ordenar</a>
+                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}&lt;24 and ${person.getPreferredMenu != null}" data-mdb-toggle="modal" th:attr="data-mdb-target='#ordenarModal' + ${i.index}" class="btn btn-info">Cambiar pedido</a>
+                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}>=24" class="btn btn-success disabled" disabled>No se puede ordenar después de las 11 AM</a>
 
                                         <!-- Modal -->
                                         <div class="modal fade" th:id="'ordenarModal' + ${i.index}" th:attr="aria-labelledby='ModalLabel' + ${i.index}" aria-hidden="true">

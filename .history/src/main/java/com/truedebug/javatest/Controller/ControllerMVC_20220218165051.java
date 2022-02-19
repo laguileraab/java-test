@@ -1,6 +1,5 @@
 package com.truedebug.javatest.Controller;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,10 +10,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.slack.api.Slack;
-import com.slack.api.methods.SlackApiException;
-import com.slack.api.methods.response.api.ApiTestResponse;
-import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 import com.truedebug.Utils.Convert;
 import com.truedebug.Utils.Day;
 import com.truedebug.javatest.Entities.Menu;
@@ -31,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -416,8 +412,7 @@ public class ControllerMVC {
 
                 ///Enviar recordatorio a todos los trabajadores
                 @RequestMapping(value = "/reminder")
-                public String delMenu(Model model) throws IOException, SlackApiException{
-
+                public String delMenu(Model model){
                     //Necesario para enviar los datos a /listEmployees
                     model.addAttribute("person",person);
                     //
@@ -430,19 +425,9 @@ public class ControllerMVC {
                         return "index.html";
                     }
                     if (person!= null && person.getName().equals("Nora")) {
-                        
-                        //Slack
-                        Slack slack = Slack.getInstance();
-                        //String token = System.getenv("SLACK_TOKEN");
-                        String token = "xoxb-3087036996598-3142468050273-9qguAWeZVlt0bMhS5c0u1OTg";
-                        ChatPostMessageResponse response = slack.methods(token).chatPostMessage(req -> req
-                        .channel("C033WE19FJ8") // Channel ID
-                        .text(":wave: Hi from a bot written in Java!"));
-
+                        personService.delete(email);
                         //Necesario para enviar los datos a /listEmployees
                         model.addAttribute("persons", personService.getAllPersons());
-                        model.addAttribute("ok", response.isOk());
-                        
                         return "employees.html";
                     } else {
                         return "index.html";

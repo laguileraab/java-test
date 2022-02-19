@@ -433,16 +433,14 @@ public class ControllerMVC {
                         
                         //Slack
                         Slack slack = Slack.getInstance();
-                        //String token = System.getenv("SLACK_TOKEN");
-                        String token = "xoxb-3087036996598-3142468050273-9qguAWeZVlt0bMhS5c0u1OTg";
+                        String token = System.getenv("SLACK_TOKEN");
+                            
                         ChatPostMessageResponse response = slack.methods(token).chatPostMessage(req -> req
-                        .channel("C033WE19FJ8") // Channel ID
+                        .channel("C1234567") // Channel ID
                         .text(":wave: Hi from a bot written in Java!"));
 
                         //Necesario para enviar los datos a /listEmployees
                         model.addAttribute("persons", personService.getAllPersons());
-                        model.addAttribute("ok", response.isOk());
-                        
                         return "employees.html";
                     } else {
                         return "index.html";

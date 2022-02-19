@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.response.api.ApiTestResponse;
-import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 import com.truedebug.Utils.Convert;
 import com.truedebug.Utils.Day;
 import com.truedebug.javatest.Entities.Menu;
@@ -416,7 +415,7 @@ public class ControllerMVC {
 
                 ///Enviar recordatorio a todos los trabajadores
                 @RequestMapping(value = "/reminder")
-                public String delMenu(Model model) throws IOException, SlackApiException{
+                public String delMenu(Model model){
 
                     //Necesario para enviar los datos a /listEmployees
                     model.addAttribute("person",person);
@@ -433,16 +432,15 @@ public class ControllerMVC {
                         
                         //Slack
                         Slack slack = Slack.getInstance();
-                        //String token = System.getenv("SLACK_TOKEN");
-                        String token = "xoxb-3087036996598-3142468050273-9qguAWeZVlt0bMhS5c0u1OTg";
-                        ChatPostMessageResponse response = slack.methods(token).chatPostMessage(req -> req
-                        .channel("C033WE19FJ8") // Channel ID
-                        .text(":wave: Hi from a bot written in Java!"));
+    Slack slack = Slack.getInstance();
+        String token = System.getenv("SLACK_TOKEN");
+
+ChatPostMessageResponse response = slack.methods(token).chatPostMessage(req -> req
+  .channel("C1234567") // Channel ID
+  .text(":wave: Hi from a bot written in Java!"));
 
                         //Necesario para enviar los datos a /listEmployees
                         model.addAttribute("persons", personService.getAllPersons());
-                        model.addAttribute("ok", response.isOk());
-                        
                         return "employees.html";
                     } else {
                         return "index.html";

@@ -53,13 +53,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
-			<groupId>com.slack.api</groupId>
-			<artifactId>slack-api-client</artifactId>
-			<version>1.19.0</version>
+			<groupId>com.hubspot.slack</groupId>
+			<artifactId>slack-base</artifactId>
+			<version>${slack.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>com.hubspot.slack</groupId>
+			<artifactId>slack-java-client</artifactId>
+			<version>${slack.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

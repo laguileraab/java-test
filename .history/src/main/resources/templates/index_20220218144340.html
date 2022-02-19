@@ -19,12 +19,6 @@
             background: lightcyan;
         }
         
-        body {
-            height: 99vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
         .h-custom {
             height: fit-content;
         }
@@ -36,12 +30,22 @@
         
         footer {
             min-height: 50px;
+            margin-top: auto;
             position: fixed;
             left: 0;
             bottom: 0;
             width: 100%;
         }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
         /*CSS para modificar la alineación del texto de la tabla*/
+        
+        table {
+            margin-bottom: 3rem;
+        }
         
         td {
             text-align: center;
@@ -54,17 +58,16 @@
 </head>
 
 <body>
-    <section>
+    <section class="vh-100">
         <div class="container-fluid h-custom">
             <div class="row d-flex justify-content-center align-items-center h-100">
-                <!--Menu  para mostrar la fecha y hora actual-->
                 <nav class="navbar navbar-light ms-auto mb-2 mb-lg-0 sticky-top bg-light">
                     <div class="container-fluid">
+                        <!--Menu  para mostrar la fecha y hora actual-->
                         <h3 th:text="'Hola ' + ${person.getName}">Menú</h3>
                         <h6 th:text="${today + ' ' + #calendars.format(#calendars.createNow(), 'HH:mm')}">Fecha</h6>
                         <!--Menu  para los botones de Crear,Modificar/Eliminar,Empleados,Cerrar cesión-->
-                        <a class="nav-link" th:href="@{/}" th:if="${person.name == 'Nora'}"><!--<i class="fab fa-plus-circle me-2" aria-hidden="true"></i>-->Inicio</a>
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown" th:if="${person.name == 'Nora'}">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenu" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                               Menús
                             </a>
@@ -78,55 +81,80 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown" th:if="${person.name == 'Nora'}">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPerson" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                               Empleados
                             </a>
                             <!-- Dropdown menu -->
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li>
+                                    <a class="nav-link" th:href="@{/employees}" th:if="${person.name == 'Nora'}"><!--<i class="fab fa-bell me-2" aria-hidden="true"></i>-->Ver lista de empleados</a>
+                                </li>
+                                <li>
                                     <a class="nav-link" th:href="@{/person}" th:if="${person.name == 'Nora'}"><!--<i class="fab fa-bell me-2" aria-hidden="true"></i>-->Adicionar empleado</a>
                                 </li>
                             </ul>
                         </li>
-                        <a class="nav-link" th:href="@{/reminder}" th:if="${person.name == 'Nora'}"><!--<i class="fab fa-bell me-2" aria-hidden="true"></i>-->Enviar recordatorio</a>
                         <a class="nav-link" th:href="@{/logout}"><!--<i class="fab fa-lock me-2" aria-hidden="true"></i>-->Cerrar sesión</a>
                     </div>
                 </nav>
-                <div class="alert alert-success" role="alert" th:if="${ok}">
-                    Recordatorio enviado exitosamente a todos los empleados
-                </div>
-                <div class="alert alert-danger" role="alert" th:text="Al parecer ocurrió un error durante el envio del recordatorio a los empleados" th:if="${ok != null and not ok}">
+                <div style="margin: 1rem;" th:if="${person.getPreferredMenu !=null}">
+                    <div class="alert alert-primary" role="alert" th:text="'Ya usted ordenó hoy: ' + ${person.getPreferredMenu}" th:if="${person.getPreferredMenu !=null}">
 
+                    </div>
                 </div>
-                <!--Tabla para mostrar las opciones de los empleados-->
-                <table class="table table-striped mb-0" style="margin-top: 2rem;">
-                    <col style="width:15%">
-                    <col style="width:10%">
-                    <col style="width:5%">
-                    <col style="width:50%">
-                    <col style="width:20%">
+                <!--Tabla para mostrar las opciones del menú del día th:if="${person.getPreferredMenu == null }"-->
+                <table class="table table-striped mb-0">
+                    <col style="width:70%">
+                    <col style="width:30%">
                     <thead id="table-head">
                         <tr>
-                            <th style="font-size: large;">Nombre</th>
-                            <th style="font-size: large;">Correo</th>
-                            <th style="font-size: large;">País</th>
-                            <th style="font-size: large;">Menu seleccionado</th>
+                            <th style="font-size: large;">Opciones</th>
                             <th style="font-size: large;">Acción</th>
                         </tr>
                     </thead>
                     <tbody id="table-body">
+                        <tr th:if="${#lists.isEmpty(options)}">
+                            <td colspan="2"> No se ha creado el menú para hoy </td>
+                        </tr>
                         <!--Ciclo para mostrar las opciones del dia a través de thymeleaf-->
-                        <tr th:each="person2 : ${persons}">
-                            <td th:if="${person2.getName} " th:text="${person2.getName} " style="font-size: 14pt;">Menu</td>
-                            <td th:if="${person2.getEmail} " th:text="${person2.getEmail} " style="font-size: 14pt;">Menu</td>
-                            <td th:if="${person2.getNationality} " th:text="${person2.getNationality} " style="font-size: 14pt;">Menu</td>
-                            <td th:text="${person2.getPreferredMenu != null} ? ${person2.getPreferredMenu} : 'No ha ordenado hoy'" style="font-size: 14pt;">Menu</td>
-                            <td>
+                        <tr th:each="option,i : ${options}">
+                            <td th:if="${option} " th:text="${option} " style="font-size: 14pt;">Menu</td>
+                            <td th:if="${option} ">
                                 <div class="card">
                                     <div class="card-body">
-                                        <!--Eliminar empleado-->
-                                        <a type="button" class="btn btn-dark" th:href="${'/dele/' + person2.getEmail}">Eliminar empleado</a>
+                                        <!--Boton de solicitar pedido si son antes de las 11:00 AM sino muestra el 2do boton desactivado para mostrar el texto-->
+                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}&lt;24 and ${person.getPreferredMenu == null}" data-mdb-toggle="modal" th:attr="data-mdb-target='#ordenarModal' + ${i.index}" class="btn btn-info">Ordenar</a>
+                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}&lt;24 and ${person.getPreferredMenu != null}" data-mdb-toggle="modal" th:attr="data-mdb-target='#ordenarModal' + ${i.index}" class="btn btn-info">Cambiar pedido</a>
+                                        <a type="button" th:if="${#calendars.format(#calendars.createNow(), 'HH')}>=24" class="btn btn-success disabled" disabled>No se puede ordenar después de las 11 AM</a>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" th:id="'ordenarModal' + ${i.index}" th:attr="aria-labelledby='ModalLabel' + ${i.index}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title " th:id="'ModalLabel' + ${i.index}">Pedido del día</h5>
+                                                        <button type="button " class="btn-close " data-mdb-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form th:id="'myform' + ${i.index}" action="#" th:object="${person}" th:action="@{'/order/' + ${i.index}}" method="get">
+                                                            <div class="alert alert-success" role="alert" th:text="${option}">
+                                                            </div>
+                                                            <div class="form mb-4">
+                                                                <input type="text" th:id="'recomendations' + ${i.index}" th:field="*{recomendations}" class="form-control form-control-lg" placeholder="Tiene alguna preferencia?" />
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Cerrar</button>
+                                                        <button type="submit" th:form="'myform' + ${i.index}" class="btn btn-primary">Ordenar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Modal -->
+
+
                                     </div>
                                 </div>
                             </td>
@@ -138,7 +166,7 @@
         </div>
     </section>
 </body>
-<footer class="text-center text-lg-start bg-light text-muted ">
+<footer class=" text-center text-lg-start bg-light text-muted ">
     <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary ">
         <!-- Copyright -->
         <div class="text-white mb-3 mb-md-0 ">
@@ -154,12 +182,12 @@
         var stringHours = current.getHours();
         if (current.getMinutes() < 10) {
             var stringMinutesShort = current.getMinutes();
-            var stringMinutes = "0" + stringMinutesShort;
+            var stringMinutes = "0 " + stringMinutesShort;
         } else {
             var stringMinutes = current.getMinutes();
         }
-        var stringTime = stringHours + ":" + stringMinutes;
-        document.getElementById("time").innerHTML = stringTime;
+        var stringTime = stringHours + ": " + stringMinutes;
+        document.getElementById("time ").innerHTML = stringTime;
     }, 1000);
 </script>
 

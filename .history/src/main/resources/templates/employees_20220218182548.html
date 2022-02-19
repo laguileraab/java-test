@@ -93,10 +93,10 @@
                         <a class="nav-link" th:href="@{/logout}"><!--<i class="fab fa-lock me-2" aria-hidden="true"></i>-->Cerrar sesión</a>
                     </div>
                 </nav>
-                <div class="alert alert-success" role="alert" th:if="${ok}">
-                    Recordatorio enviado exitosamente a todos los empleados
+                <div class="alert alert-success" role="alert" th:text="Recordatorio enviado exitosamente a todos los empleados" th:if="${ok}">
+
                 </div>
-                <div class="alert alert-danger" role="alert" th:text="Al parecer ocurrió un error durante el envio del recordatorio a los empleados" th:if="${ok != null and not ok}">
+                <div class="alert alert-danger" role="alert" th:text="Al parecer ocurrió un error durante el envio del recordatorio a los empleados" th:if="${not ok}">
 
                 </div>
                 <!--Tabla para mostrar las opciones de los empleados-->
