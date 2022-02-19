@@ -435,41 +435,30 @@ public class ControllerMVC {
                         List<String> options = new ArrayList<String>();
                         List<Attachment> optionsAttachment = new ArrayList<Attachment>();
 
-                        String message = "Hola! a todos :wave:"+"\n"
-                        +"Dejo el menú de hoy :)";
+
+                        String message = ":wave: ";
                         String option1 = menu.getOption1();
                         String option2 = menu.getOption2();
                         String option3 = menu.getOption3();
                         String option4 = menu.getOption4();
                         String option5 = menu.getOption5();
-                        String goodbye = "Tengan lindo día!";
 
                         if(option1 != null && option1 != ""){
                             options.add(option1);
-                            optionsAttachment.add(Attachment.builder().text(option1).build());
-
                         }
                         if(option2 != null && option2 != ""){
                             options.add(option2);
-                            optionsAttachment.add(Attachment.builder().text(option2).build());
-
                         }
                         if(option3 != null && option3 != ""){
                             options.add(option3);
-                            optionsAttachment.add(Attachment.builder().text(option3).build());
-
                         }
                         if(option4 != null && option4 != ""){
                             options.add(option4);
-                            optionsAttachment.add(Attachment.builder().text(option4).build());
-
                         }
                         if(option5 != null && option5 != ""){
                             options.add(option5);
-                            optionsAttachment.add(Attachment.builder().text(option5).build());
-
                         }
-                        optionsAttachment.add(Attachment.builder().text(goodbye).build());
+                        optionsAttachment.add(Attachment.builder().text(option1));
 
                         //Slack
                         Slack slack = Slack.getInstance();
@@ -478,7 +467,7 @@ public class ControllerMVC {
                         ChatPostMessageResponse response = slack.methods(token).chatPostMessage(req -> req
                         .channel("C033WE19FJ8") // Channel ID
                         .text(message)
-                        .attachments(optionsAttachment));
+                        .attachments());
 
                         //Necesario para enviar los datos a /listEmployees
                         model.addAttribute("persons", personService.getAllPersons());

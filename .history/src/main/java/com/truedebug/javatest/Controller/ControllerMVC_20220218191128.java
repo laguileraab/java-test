@@ -469,7 +469,6 @@ public class ControllerMVC {
                             optionsAttachment.add(Attachment.builder().text(option5).build());
 
                         }
-                        optionsAttachment.add(Attachment.builder().text(goodbye).build());
 
                         //Slack
                         Slack slack = Slack.getInstance();

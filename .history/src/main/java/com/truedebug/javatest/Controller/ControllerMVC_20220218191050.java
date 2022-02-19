@@ -442,7 +442,6 @@ public class ControllerMVC {
                         String option3 = menu.getOption3();
                         String option4 = menu.getOption4();
                         String option5 = menu.getOption5();
-                        String goodbye = "Tengan lindo día!";
 
                         if(option1 != null && option1 != ""){
                             options.add(option1);
@@ -469,7 +468,6 @@ public class ControllerMVC {
                             optionsAttachment.add(Attachment.builder().text(option5).build());
 
                         }
-                        optionsAttachment.add(Attachment.builder().text(goodbye).build());
 
                         //Slack
                         Slack slack = Slack.getInstance();
