@@ -478,7 +478,7 @@ public class ControllerMVC {
                         }
                         https://nora.truedebug.io/menu/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
                         optionsAttachment.add(Attachment.builder().text(goodbye).build());
-                        optionsAttachment.add(Attachment.builder().text("http://fce8-152-207-151-253.ngrok.io/menu/"+ menu.getId()).build());
+                        optionsAttachment.add(Attachment.builder().text("http://fce8-152-207-151-253.ngrok.io/menu/"+ menu.getId() ).build());
 
                         //Slack
                         Slack slack = Slack.getInstance();
