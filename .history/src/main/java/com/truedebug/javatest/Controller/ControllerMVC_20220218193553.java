@@ -486,25 +486,24 @@ public class ControllerMVC {
                         .channel("C033WE19FJ8") // Channel ID
                         .text(message)
                         .attachments(optionsAttachment));
-
                         //Modificamos el resultado del menú para mostrar además la recomendación
-                        List<Person> persons = new ArrayList<Person>();
-                        personService.getAllPersons().forEach((p)->{
-                            //Mostramos la opción seleccionada junto a la recomendación
-                            if(p.getPreferredMenu() != null && p.getPreferredMenu() != ""
-                            && p.getRecomendations() != null && p.getRecomendations() != ""){
-                                    p.setPreferredMenu(p.getPreferredMenu() + ", Recomendación: " + p.getRecomendations());
-                            }
-                            persons.add(p);
-                        });
-                        
+                List<Person> persons = new ArrayList<Person>();
+                personService.getAllPersons().forEach((p)->{
+                //Mostramos la opción seleccionada junto a la recomendación
+                if(p.getPreferredMenu() != null && p.getPreferredMenu() != ""
+                && p.getRecomendations() != null && p.getRecomendations() != ""){
+                    p.setPreferredMenu(p.getPreferredMenu() + ", Recomendación: " + p.getRecomendations());
+                }
+                persons.add(p);
+            });
+
                         //Necesario para enviar los datos a /listEmployees
                         model.addAttribute("persons", personService.getAllPersons());
                         model.addAttribute("ok", response.isOk());
-                        
+
                         return "employees.html";
                     } else {
                         return "index.html";
                     }
                 }
-            }
+}

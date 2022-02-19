@@ -498,13 +498,13 @@ public class ControllerMVC {
                             persons.add(p);
                         });
                         
-                        //Necesario para enviar los datos a /listEmployees
-                        model.addAttribute("persons", personService.getAllPersons());
-                        model.addAttribute("ok", response.isOk());
-                        
-                        return "employees.html";
-                    } else {
+                            //Necesario para enviar los datos a /listEmployees
+                            model.addAttribute("persons", personService.getAllPersons());
+                            model.addAttribute("ok", response.isOk());
+
+                            return "employees.html";
+                        } else {
                         return "index.html";
                     }
                 }
-            }
+}
